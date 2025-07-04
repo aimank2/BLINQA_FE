@@ -19,16 +19,12 @@ import {
 } from "@/hooks/useSheet";
 
 const AiChatBox = () => {
-  const { googleToken, clearGoogleToken } = useGoogleToken();
+  const { googleToken } = useGoogleToken();
   const { setSheet, sheetId, title } = useSheetContext();
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
-
-  useEffect(() => {
-    clearGoogleToken();
-  }, []);
 
   // Log the sheetId whenever it changes
   useEffect(() => {
@@ -188,7 +184,6 @@ const AiChatBox = () => {
 
   return (
     <section className="px-6 relative">
-      <p>{JSON.stringify(tasks)}</p>
       <div className="border rounded-2xl min-h-[52vh] p-4 bg-gradient-to-br from-slate-50 via-white to-slate-100 shadow-sm flex flex-col justify-between transition-all">
         {/* Sheet info UI */}
 
