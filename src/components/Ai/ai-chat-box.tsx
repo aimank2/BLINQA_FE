@@ -19,12 +19,16 @@ import {
 } from "@/hooks/useSheet";
 
 const AiChatBox = () => {
-  const { googleToken } = useGoogleToken();
+  const { googleToken, clearGoogleToken } = useGoogleToken();
   const { setSheet, sheetId, title } = useSheetContext();
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    clearGoogleToken();
+  }, []);
 
   // Log the sheetId whenever it changes
   useEffect(() => {
@@ -43,6 +47,7 @@ const AiChatBox = () => {
   const automateTasks = async (tasks: any[]) => {
     let sheetId = "";
     for (const task of tasks) {
+      console.log("Processing task:", task);
       switch (task.action) {
         case "createSheet": {
           const result = await createSheetMutation.mutateAsync(task.title);
@@ -104,26 +109,28 @@ const AiChatBox = () => {
   const handleAutomate = async () => {
     setLoading(true);
     setError("");
+
     try {
       const res = await http.post("/ai/sheet-planner", { prompt: input });
-      const aiTasks = res.data;
-      // Check if addTable is present
-      const hasAddTable = aiTasks.some((t: any) => t.action === "addTable");
-      if (!hasAddTable) {
-        // Optionally, use useGetValues to fetch headers and build columnTypes
-        // Example (pseudo):
-        // const values = await getValues({spreadsheetId, range: "Sheet1!A1:Z1"});
-        // const columnTypes = values[0].map((name, idx) => ({ index: idx, name, type: "TEXT" }));
-        aiTasks.push({
-          action: "addTable",
-          sheetTitle: "Sheet1",
-          range: "Sheet1!A1:Z20",
-          tableName: "AutoTable",
-          columnTypes: [
-            /* ...fill as needed... */
-          ],
-        });
-      }
+      let aiTasks = res.data;
+
+      // Filter out any existing "addTable" task to ensure it's added only once
+      aiTasks = aiTasks.filter((t: any) => t.action !== "addTable");
+
+      // Define the addTable task
+      const addTableTask = {
+        action: "addTable",
+        sheetTitle: "Sheet1",
+        range: "Sheet1!A1:Z20",
+        tableName: "AutoTable",
+        columnTypes: [
+          // Fill in column definitions or fetch dynamically if needed
+        ],
+      };
+
+      // Add it at the end
+      aiTasks.push(addTableTask);
+
       setTasks(aiTasks);
       await automateTasks(aiTasks);
       setInput("");
