@@ -44,75 +44,108 @@ const AiChatBox = () => {
   const createChartMutation = useCreateChart(googleToken);
   const addTableMutation = useAddTable(googleToken);
 
-  const automateTasks = async (tasks: any[]) => {
+  // Define interfaces for each action type
+  interface CreateSheetTask {
+    title: string;
+  }
+  interface AppendRowsTask {
+    range?: string;
+    values: any[][];
+  }
+  interface UpdateValuesTask {
+    range?: string;
+    values: any[][];
+  }
+  interface ClearValuesTask {
+    range?: string;
+  }
+  interface CreateChartTask {
+    chartType: string;
+    title: string;
+    range?: string;
+    position?: any;
+  }
+  interface AddTableTask {
+    sheetTitle?: string;
+    range?: string;
+    tableName?: string;
+    columnTypes?: any;
+  }
+
+  // Union type for all possible actions
+  type Task =
+    | { createSheet: CreateSheetTask }
+    | { appendRows: AppendRowsTask }
+    | { updateValues: UpdateValuesTask }
+    | { clearValues: ClearValuesTask }
+    | { createChart: CreateChartTask }
+    | { addTable: AddTableTask };
+
+  // Update the function signature
+  const automateTasks = async (tasks: Task[]) => {
     let sheetId = "";
+    console.log("Processing task:", tasks);
 
     for (const task of tasks) {
-      console.log("Processing task:", task);
-
+      const [action, payload] = Object.entries(task)[0] as [string, any];
+      console.log("Processing task:", action, payload);
       try {
-        switch (task.action) {
+        switch (action) {
           case "createSheet": {
-            const result = await createSheetMutation.mutateAsync(task.title);
-            setSheet(result, task.title);
+            const result = await createSheetMutation.mutateAsync(payload.title);
+            setSheet(result, payload.title);
             sheetId = result;
             break;
           }
-
           case "appendRows": {
             await appendRowsMutation.mutateAsync({
               spreadsheetId: sheetId,
-              range: "Sheet1",
-              values: task.values,
+              range: payload.range || "Sheet1",
+              values: payload.values,
             });
             break;
           }
-
           case "updateValues": {
             await updateValuesMutation.mutateAsync({
               spreadsheetId: sheetId,
-              range: "Sheet1",
-              values: task.values,
+              range: payload.range || "Sheet1",
+              values: payload.values,
             });
             break;
           }
-
           case "clearValues": {
             await deleteValuesMutation.mutateAsync({
               spreadsheetId: sheetId,
-              range: "Sheet1",
+              range: payload.range || "Sheet1",
             });
             break;
           }
-
           case "createChart": {
             await createChartMutation.mutateAsync({
               spreadsheetId: sheetId,
-              chartType: task.chartType,
-              title: task.title,
-              range: "Sheet1!A1:B20",
-              position: task.position,
+              chartType: payload.chartType,
+              title: payload.title,
+              range: payload.range || "Sheet1!A1:B20",
+              position: payload.position,
             });
             break;
           }
-
           case "addTable": {
             await addTableMutation.mutateAsync({
               spreadsheetId: sheetId,
-              sheetTitle: task.sheetTitle,
-              range: task.range,
-              tableName: task.tableName,
-              columnTypes: task.columnTypes,
+              sheetTitle: payload?.sheetTitle || "Sheet1",
+              range: payload?.range,
+              tableName: payload?.tableName,
+              columnTypes: payload?.columnTypes,
             });
             break;
           }
-
           default:
-            console.warn("Unknown action:", task.action);
+            console.warn("Unknown action:", action);
         }
       } catch (error) {
-        console.error(`❌ Error executing task "${task.action}":`, error);
-        throw error; // Stops further processing
+        console.error(`❌ Error executing task "${action}":`, error);
+        throw error;
       }
     }
   };
@@ -128,15 +161,16 @@ const AiChatBox = () => {
       // Filter out any existing "addTable" task to ensure it's added only once
       aiTasks = aiTasks.filter((t: any) => t.action !== "addTable");
 
-      // Define the addTable task
+      // Define the addTable task payload
       const addTableTask = {
-        action: "addTable",
-        sheetTitle: "Sheet1",
-        range: "Sheet1!A1:Z20",
-        tableName: "AutoTable",
-        columnTypes: [
-          // Fill in column definitions or fetch dynamically if needed
-        ],
+        addTable: {
+          sheetTitle: "Sheet1",
+          range: "Sheet1!A1:Z20",
+          tableName: "AutoTable",
+          columnTypes: [
+            // Fill in column definitions or fetch dynamically if needed
+          ],
+        },
       };
 
       // Add it at the end
@@ -154,6 +188,7 @@ const AiChatBox = () => {
 
   return (
     <section className="px-6 relative">
+      <p>{JSON.stringify(tasks)}</p>
       <div className="border rounded-2xl min-h-[52vh] p-4 bg-gradient-to-br from-slate-50 via-white to-slate-100 shadow-sm flex flex-col justify-between transition-all">
         {/* Sheet info UI */}
 

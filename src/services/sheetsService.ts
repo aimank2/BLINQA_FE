@@ -22,12 +22,24 @@ export const appendRows = async (
   range: string,
   values: any[][]
 ) => {
+  // Clean possible leading quotes/apostrophes from formulas
+  const cleaned = values.map((row) =>
+    row.map((cell) => {
+      if (typeof cell === "string" && cell.trim().match(/^['"]?=.*$/)) {
+        return cell.trim().replace(/^['"]+/, "");
+      }
+      return cell;
+    })
+  );
+
   await axios.post(
     `${BASE}/${spreadsheetId}/values/${range}:append`,
-    { values },
+    { values: cleaned },
     {
       headers: getHeaders(token),
-      params: { valueInputOption: "RAW" },
+      params: {
+        valueInputOption: "USER_ENTERED", // ensures correct interpretation
+      },
     }
   );
 };
