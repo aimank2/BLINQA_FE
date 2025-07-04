@@ -46,62 +46,73 @@ const AiChatBox = () => {
 
   const automateTasks = async (tasks: any[]) => {
     let sheetId = "";
+
     for (const task of tasks) {
       console.log("Processing task:", task);
-      switch (task.action) {
-        case "createSheet": {
-          const result = await createSheetMutation.mutateAsync(task.title);
-          setSheet(result, task.title);
-          sheetId = result;
-          break;
-        }
 
-        case "appendRows": {
-          await appendRowsMutation.mutateAsync({
-            spreadsheetId: sheetId || "",
-            range: "Sheet1",
-            values: task.values,
-          });
-          break;
+      try {
+        switch (task.action) {
+          case "createSheet": {
+            const result = await createSheetMutation.mutateAsync(task.title);
+            setSheet(result, task.title);
+            sheetId = result;
+            break;
+          }
+
+          case "appendRows": {
+            await appendRowsMutation.mutateAsync({
+              spreadsheetId: sheetId,
+              range: "Sheet1",
+              values: task.values,
+            });
+            break;
+          }
+
+          case "updateValues": {
+            await updateValuesMutation.mutateAsync({
+              spreadsheetId: sheetId,
+              range: "Sheet1",
+              values: task.values,
+            });
+            break;
+          }
+
+          case "clearValues": {
+            await deleteValuesMutation.mutateAsync({
+              spreadsheetId: sheetId,
+              range: "Sheet1",
+            });
+            break;
+          }
+
+          case "createChart": {
+            await createChartMutation.mutateAsync({
+              spreadsheetId: sheetId,
+              chartType: task.chartType,
+              title: task.title,
+              range: "Sheet1!A1:B20",
+              position: task.position,
+            });
+            break;
+          }
+
+          case "addTable": {
+            await addTableMutation.mutateAsync({
+              spreadsheetId: sheetId,
+              sheetTitle: task.sheetTitle,
+              range: task.range,
+              tableName: task.tableName,
+              columnTypes: task.columnTypes,
+            });
+            break;
+          }
+
+          default:
+            console.warn("Unknown action:", task.action);
         }
-        case "updateValues": {
-          await updateValuesMutation.mutateAsync({
-            spreadsheetId: sheetId || "sheetId",
-            range: "Sheet1",
-            values: task.values,
-          });
-          break;
-        }
-        case "clearValues": {
-          await deleteValuesMutation.mutateAsync({
-            spreadsheetId: sheetId || "",
-            range: "Sheet1",
-          });
-          break;
-        }
-        case "createChart": {
-          console.log("Creating chart:", task); // Log the task inf
-          await createChartMutation.mutateAsync({
-            spreadsheetId: sheetId || "",
-            chartType: task.chartType,
-            title: task.title,
-            range: "Sheet1!A1:B20",
-            position: task.position,
-          });
-          break;
-        }
-        case "addTable": {
-          await addTableMutation.mutateAsync({
-            spreadsheetId: sheetId || "",
-            sheetTitle: task.sheetTitle,
-            range: task.range,
-            tableName: task.tableName,
-            columnTypes: task.columnTypes,
-          });
-          break;
-        }
-        default:
-          console.warn("Unknown action:", tasks);
+      } catch (error) {
+        console.error(`❌ Error executing task "${task.action}":`, error);
+        throw error; // Stops further processing
       }
     }
   };
