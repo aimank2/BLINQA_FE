@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## AI-Powered Google Sheets Builder
+This project allows you to build Google Sheets using AI, powered by Next.js on the frontend and Node.js (Express) as the backend.
+
+If you'd like to test the application, feel free to reach out at kandakjiai@gmail.com — I’ll add your Google account as a test user.
+🔗 https://blinqa.vercel.app/login
+
 
 ## Getting Started
 
