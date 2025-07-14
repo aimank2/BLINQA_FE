@@ -5,12 +5,12 @@ import React from "react";
 const NavBar = () => {
   return (
     <nav>
-      <div className="flex absolute top-8 left-8 flex-col gap-6 text-2xl">
+      <div className="flex absolute top-8 left-8 flex-col gap-0 text-2xl -z-0 md:gap-6">
         <div className="flex flex-row gap-4 items-start" id="logo">
           <Sparkle fill="white" />
           BLINQA
         </div>
-        <p className="text-sm font-thin">
+        <p className="text-xs font-thin md:text-sm">
           Effortless AI-enhanced
           <br /> spreadsheets for everyone
         </p>

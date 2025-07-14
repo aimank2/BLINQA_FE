@@ -4,7 +4,7 @@ import NavBar from "@/components/landing/nav-bar";
 const page = () => {
   return (
     <main
-      className="relative flex-center w-full h-screen"
+      className="relative w-full h-screen flex-center"
       style={{
         backgroundImage: `url(${"/bg-green.png"})`,
         backgroundSize: "cover",
@@ -13,7 +13,9 @@ const page = () => {
       }}
     >
       <NavBar />
-      <CTA />
+      <div className="mt-24 md:mt-0">
+        <CTA />
+      </div>
     </main>
   );
 };

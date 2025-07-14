@@ -118,10 +118,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background font-unbounded text-white;
+    @apply font-unbounded text-white bg-[#03221e];
   }
 }
 
 .flex-center {
-  @apply flex items-center justify-center;
+  @apply flex justify-center items-center;
 }
