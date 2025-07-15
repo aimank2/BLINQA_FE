@@ -1,10 +1,10 @@
 "use client";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const CTA = () => {
   return (
-    <div className="relative z-10 w-[90vw] md:w-[500px] h-[600px]  bg-white/5 rounded-lg shadow-lg text-white p-8 ">
+    <div className="relative z-10 w-[90vw] md:w-[500px] h-[60vh]  bg-white/5 rounded-lg shadow-lg text-white p-8 ">
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-4">
           <Sparkles fill="white" />
@@ -14,16 +14,17 @@ const CTA = () => {
           </p>
         </div>
         <div className="flex flex-col gap-4">
-          <p className="text-xs font-thin font-unbounded max-w-1/2">
+          <p className="text-[10px] sm:text-xs font-thin font-unbounded sm:max-w-1/2">
             Try AI-powered software free
             <br />
-            To get started, you’ll need to grant access to your Google Sheets.{" "}
+            To get started, you’ll need to grant access to your Google Sheets.
           </p>
           <Link
             href={""}
-            className="flex !justify-between px-4 py-2 my-5 mt-4 font-semibold uppercase rounded-lg flex-center bg-white/5 md:bg-black/15 hover:bg-white/10 transition-colors duration-1000"
+            className="flex text-white/70 !justify-between px-4 py-2 my-5 mt-4 font-semibold uppercase rounded-lg  flex-center bg-white/5 md:bg-black/15 hover:bg-white/10 transition-colors duration-1000"
           >
-            Get started <ArrowRight />
+            Get started <ArrowRight className="hidden md:block" />
+            <ArrowUpRight className="block md:hidden" />
           </Link>
         </div>
       </div>

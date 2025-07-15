@@ -123,5 +123,5 @@
 }
 
 .flex-center {
-  @apply flex justify-center items-center;
+  @apply justify-center items-center;
 }

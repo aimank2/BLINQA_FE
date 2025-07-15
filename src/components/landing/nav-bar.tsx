@@ -2,6 +2,32 @@ import { ArrowUpRight, Sparkle } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
+export const NAV_ITEMS = [
+  { label: "About", href: "#about" },
+  { label: "Contact Us", href: "#contact" },
+  { label: "Privacy Policy", href: "#privacy" },
+  { label: "Road Map", href: "#roadmap", extraClass: "h-20" },
+];
+
+const NavItem = ({
+  label,
+  href,
+  extraClass,
+}: {
+  label: string;
+  href: string;
+  extraClass?: string;
+}) => (
+  <Link
+    href={href}
+    className={`px-4 py-2 capitalize rounded-lg bg-white/5 hover:bg-white/10 w-[14vw] ${
+      extraClass || ""
+    }`}
+  >
+    {label}
+  </Link>
+);
+
 const NavBar = () => {
   return (
     <nav>
@@ -15,30 +41,9 @@ const NavBar = () => {
           <br /> spreadsheets for everyone
         </p>
         <div className="hidden flex-col gap-2 my-8 text-sm md:flex">
-          <Link
-            href={""}
-            className="px-4 py-2 capitalize rounded-lg bg-white/5 hover:bg-white/10"
-          >
-            About
-          </Link>
-          <Link
-            href={""}
-            className="px-4 py-2 capitalize rounded-lg bg-white/5 hover:bg-white/10"
-          >
-            Contact Us
-          </Link>
-          <Link
-            href={""}
-            className="px-4 py-2 capitalize rounded-lg bg-white/5 hover:bg-white/10"
-          >
-            Privacy Policy
-          </Link>
-          <Link
-            href={""}
-            className="px-4 py-2 h-20 capitalize rounded-lg bg-white/5 hover:bg-white/10"
-          >
-            Road Map
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <NavItem key={item.label} {...item} />
+          ))}
         </div>
       </div>
       <div className="hidden absolute top-8 right-8 flex-col gap-2 items-end text-2xl md:flex">

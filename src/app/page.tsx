@@ -1,10 +1,11 @@
 import CTA from "@/components/landing/chat-box";
+import Footer from "@/components/landing/footer";
 import NavBar from "@/components/landing/nav-bar";
 
 const page = () => {
   return (
     <main
-      className="relative w-full h-screen flex-center"
+      className="relative w-full h-screen flex flex-center"
       style={{
         backgroundImage: `url(${"/bg-green.png"})`,
         backgroundSize: "cover",
@@ -13,9 +14,8 @@ const page = () => {
       }}
     >
       <NavBar />
-      <div className="mt-24 md:mt-0">
-        <CTA />
-      </div>
+      <CTA />
+      <Footer />
     </main>
   );
 };
